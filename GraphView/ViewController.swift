@@ -7,19 +7,102 @@
 //
 
 import UIKit
-
+import SwiftyWave
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //let wave = SwiftyWaveView(frame: CGRect(x: 50, y: 100, width: 300, height: 300))
+        let line = LineView(frame: self.view.frame)
+        //self.view.addSubview(line)
+        animateLine()
+        //self.view.addSubview(wave)
+        //wave.start()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        
+        // Dispose of any resjjkklources that can be recreated.
     }
-
-
+    weak var shapeLayer: CAShapeLayer?
+    
+    func animateLine() {
+        // remove old shape layer if any
+        
+        self.shapeLayer?.removeFromSuperlayer()
+        
+        // create whatever path you want
+        
+        let path = UIBezierPath()
+        path.move(to: CGPoint(x: 10, y: 50))
+        path.addLine(to: CGPoint(x: 200, y: 50))
+        path.addLine(to: CGPoint(x: 200, y: 240))
+        
+        // create shape layer for that path
+        
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+        shapeLayer.strokeColor = UIColor.white.cgColor
+        shapeLayer.lineWidth = 4
+        shapeLayer.path = path.cgPath
+        
+        // animate it
+        
+        view.layer.addSublayer(shapeLayer)
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.fromValue = 0
+        animation.duration = 2
+        shapeLayer.add(animation, forKey: "MyAnimation")
+        
+        // save shape layer
+        
+        self.shapeLayer = shapeLayer
+    }
 }
 
+class LineView : UIView{
+    override func draw(_ rect: CGRect) {
+        let aPath = UIBezierPath()
+        
+        aPath.move(to: CGPoint(x:30, y:100))
+        
+        aPath.addLine(to: CGPoint(x:150, y:300))
+        
+        //Keep using the method addLineToPoint until you get to the one where about to close the path
+        
+        aPath.close()
+        
+        //If you want to stroke it with a red color
+        UIColor.red.set()
+        aPath.stroke()
+        //If you want to fill it as well
+        aPath.fill()
+    }
+}
+class SineView: UIView{
+    let graphWidth: CGFloat = 0.8  // Graph is 80% of the width of the view
+    let amplitude: CGFloat = 0.3   // Amplitude of sine wave is 30% of view height
+    
+    override func draw(_ rect: CGRect) {
+        let width = rect.width
+        let height = rect.height
+        
+        let origin = CGPoint(x: width * (1 - graphWidth) / 2, y: height * 0.50)
+        
+        let path = UIBezierPath()
+        path.move(to: origin)
+        
+        for angle in stride(from: 5.0, through: 360.0, by: 5.0) {
+            let x = origin.x + CGFloat(angle/360.0) * width * graphWidth
+            let y = origin.y - CGFloat(sin(angle/180.0 * Double.pi)) * height * amplitude
+            path.addLine(to: CGPoint(x: x, y: y))
+        }
+        
+        UIColor.black.setStroke()
+        //let sineView = SineView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+    }
+}
