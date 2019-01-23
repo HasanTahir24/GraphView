@@ -10,13 +10,19 @@ import UIKit
 import SwiftyWave
 class ViewController: UIViewController {
 
+    enum Direction{
+        case Up
+        case Down
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //let wave = SwiftyWaveView(frame: CGRect(x: 50, y: 100, width: 300, height: 300))
-        let line = LineView(frame: self.view.frame)
+        //let line = LineView(frame: self.view.frame)
         //self.view.addSubview(line)
-        animateLine()
+        let startingPoint : CGPoint =  CGPoint (x: 0, y: UIScreen.main.bounds.midY)
+        animateLine(StartingPoint: startingPoint)
+       
         //self.view.addSubview(wave)
         //wave.start()
         // Do any additional setup after loading the view, typically from a nib.
@@ -30,24 +36,39 @@ class ViewController: UIViewController {
     }
     weak var shapeLayer: CAShapeLayer?
     
-    func animateLine() {
+    func animateLine(StartingPoint startPoint : CGPoint) {
         // remove old shape layer if any
         
         self.shapeLayer?.removeFromSuperlayer()
         
         // create whatever path you want
-        
         let path = UIBezierPath()
-        path.move(to: CGPoint(x: 10, y: 50))
-        path.addLine(to: CGPoint(x: 200, y: 50))
-        path.addLine(to: CGPoint(x: 200, y: 240))
+        path.move(to: startPoint)
+        var currentX : CGFloat = startPoint.x
+        var currentY : CGFloat = startPoint.y
+        var currentDirection : Direction = .Up
+        while (currentX < UIScreen.main.bounds.maxX) {
+            currentX += CGFloat(arc4random()%10 + 1)
+            if currentDirection == .Up{
+                currentY = startPoint.y + CGFloat(arc4random()%30 + 1)
+                currentDirection = .Down
+            }
+            else{
+                currentY = startPoint.y - CGFloat(arc4random()%30 + 1)
+                currentDirection = .Up
+            }
+            path.addLine(to: CGPoint(x: currentX, y: currentY))
+        }
+        
+        //path.addLine(to: CGPoint(x: 200, y: 50))
+       // path.addLine(to: CGPoint(x: 220, y: 240))
         
         // create shape layer for that path
         
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
-        shapeLayer.strokeColor = UIColor.white.cgColor
-        shapeLayer.lineWidth = 4
+        shapeLayer.strokeColor = UIColor.gray.cgColor
+        shapeLayer.lineWidth = 2
         shapeLayer.path = path.cgPath
         
         // animate it
@@ -55,7 +76,7 @@ class ViewController: UIViewController {
         view.layer.addSublayer(shapeLayer)
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.fromValue = 0
-        animation.duration = 2
+        animation.duration = 5
         shapeLayer.add(animation, forKey: "MyAnimation")
         
         // save shape layer
