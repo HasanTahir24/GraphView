@@ -17,12 +17,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //let wave = SwiftyWaveView(frame: CGRect(x: 50, y: 100, width: 300, height: 300))
+        let wave = SwiftyWaveView(frame: CGRect(x: 50, y: 100, width: 300, height: 300))
         //let line = LineView(frame: self.view.frame)
         //self.view.addSubview(line)
         let startingPoint : CGPoint =  CGPoint (x: 0, y: UIScreen.main.bounds.midY)
         animateLine(StartingPoint: startingPoint)
        
+        
+    
         //self.view.addSubview(wave)
         //wave.start()
         // Do any additional setup after loading the view, typically from a nib.
@@ -44,27 +46,41 @@ class ViewController: UIViewController {
         // create whatever path you want
         let path = UIBezierPath()
         path.move(to: startPoint)
+        var currentX1 : CGFloat = startPoint.x
+        var currentX2 : CGFloat = startPoint.x
         var currentX : CGFloat = startPoint.x
+        
         var currentY : CGFloat = startPoint.y
+        var currentY1 : CGFloat = startPoint.y
+        var currentY2 : CGFloat = startPoint.y
+        
         var currentDirection : Direction = .Up
         while (currentX < UIScreen.main.bounds.maxX) {
-            currentX += CGFloat(arc4random()%10 + 1)
+            currentX += CGFloat(arc4random()%30 + 1)
+            
+            currentX1 = currentX - CGFloat(arc4random()%10 + 1)
+            currentX2 = currentX - CGFloat(arc4random()%30 + 1)
+            
             if currentDirection == .Up{
-                currentY = startPoint.y + CGFloat(arc4random()%30 + 1)
+                currentY1 = startPoint.y + CGFloat(arc4random()%50 + 1)
+                currentY2 = startPoint.y + CGFloat(arc4random()%50 + 1)
                 currentDirection = .Down
             }
             else{
-                currentY = startPoint.y - CGFloat(arc4random()%30 + 1)
+                //currentY = startPoint.y - CGFloat(arc4random()%30 + 1)
+                currentY1 = startPoint.y - CGFloat(arc4random()%50 + 1)
+                currentY2 = startPoint.y - CGFloat(arc4random()%50 + 1)
                 currentDirection = .Up
             }
-            path.addLine(to: CGPoint(x: currentX, y: currentY))
+        //    path.addLine(to: CGPoint(x: currentX, y: currentY))
+          path.addCurve(to: CGPoint(x: currentX, y: startPoint.y), controlPoint1: CGPoint(x: currentX1, y: currentY1), controlPoint2: CGPoint(x: currentX2, y: currentY1))
         }
         
         //path.addLine(to: CGPoint(x: 200, y: 50))
        // path.addLine(to: CGPoint(x: 220, y: 240))
         
         // create shape layer for that path
-        
+        //path.addCurve(to: CGPoint(x: 50, y: 350), controlPoint1: CGPoint(x: 15, y: 450), controlPoint2: CGPoint(x: 35, y: 450))
         let shapeLayer = CAShapeLayer()
         shapeLayer.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
         shapeLayer.strokeColor = UIColor.gray.cgColor
@@ -124,6 +140,11 @@ class SineView: UIView{
         }
         
         UIColor.black.setStroke()
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.fillColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0).cgColor
+        shapeLayer.strokeColor = UIColor.gray.cgColor
+        shapeLayer.lineWidth = 2
+        shapeLayer.path = path.cgPath
         //let sineView = SineView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
     }
 }
