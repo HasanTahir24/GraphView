@@ -56,11 +56,18 @@ class ViewController: UIViewController {
         
         var currentDirection : Direction = .Up
         while (currentX < UIScreen.main.bounds.maxX) {
-            currentX += CGFloat(arc4random()%30 + 1)
+            currentX1 = currentX + CGFloat(arc4random()%6 + 1)
+            currentX2 = currentX + CGFloat(arc4random()%13 + 1)
+            currentX += CGFloat(arc4random()%20 + 1)
             
-            currentX1 = currentX - CGFloat(arc4random()%10 + 1)
-            currentX2 = currentX - CGFloat(arc4random()%30 + 1)
+            if currentX<=currentX1{
+                currentX = currentX1 + CGFloat(arc4random()%10 + 1)
+            }
+            if currentX<=currentX2{
+                currentX = currentX2  + CGFloat(arc4random()%10 + 1)
+            }
             
+            print(currentX1,currentX2,currentX)
             if currentDirection == .Up{
                 currentY1 = startPoint.y + CGFloat(arc4random()%50 + 1)
                 currentY2 = startPoint.y + CGFloat(arc4random()%50 + 1)
@@ -73,7 +80,7 @@ class ViewController: UIViewController {
                 currentDirection = .Up
             }
         //    path.addLine(to: CGPoint(x: currentX, y: currentY))
-          path.addCurve(to: CGPoint(x: currentX, y: startPoint.y), controlPoint1: CGPoint(x: currentX1, y: currentY1), controlPoint2: CGPoint(x: currentX2, y: currentY1))
+          path.addCurve(to: CGPoint(x: currentX, y: startPoint.y), controlPoint1: CGPoint(x: currentX1, y: currentY1), controlPoint2: CGPoint(x: currentX2, y: currentY2))
         }
         
         //path.addLine(to: CGPoint(x: 200, y: 50))
